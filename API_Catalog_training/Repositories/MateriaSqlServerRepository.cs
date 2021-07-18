@@ -7,84 +7,81 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_Catalog_training.Repositories {
-    public class JogoSqlServerRepository : IJogoRepository {
+    public class MateriaSqlServerRepository : IMateriaRepository {
         private readonly SqlConnection sqlConnection;
 
-        public JogoSqlServerRepository(IConfiguration configuration) {
+        public MateriaSqlServerRepository(IConfiguration configuration) {
             sqlConnection = new SqlConnection(configuration.GetConnectionString("Default"));
         }
 
-        public async Task<List<Jogo>> Obter(int pagina, int quantidade) {
-            var jogos = new List<Jogo>();
+        public async Task<List<Materia>> Obter(int pagina, int quantidade) {
+            var Materias = new List<Materia>();
 
-            var comando = $"select * from Jogos order by id offset {((pagina - 1) * quantidade)} rows fetch next {quantidade} rows only";
+            var comando = $"select * from Materias order by id offset {((pagina - 1) * quantidade)} rows fetch next {quantidade} rows only";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);
             SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
 
             while(sqlDataReader.Read()) {
-                jogos.Add(new Jogo {
+                Materias.Add(new Materia {
                     Id = (Guid)sqlDataReader["Id"],
                     Nome = (string)sqlDataReader["Nome"],
-                    Produtora = (string)sqlDataReader["Produtora"],
-                    Preco = (double)sqlDataReader["Preco"]
+                    PreRequisitos = (string)sqlDataReader["PreRequisitos"]
                 });
             }
 
             await sqlConnection.CloseAsync();
 
-            return jogos;
+            return Materias;
         }
 
-        public async Task<Jogo> Obter(Guid id) {
-            Jogo jogo = null;
+        public async Task<Materia> Obter(Guid id) {
+            Materia Materia = null;
 
-            var comando = $"select * from Jogos where Id = '{id}'";
+            var comando = $"select * from Materias where Id = '{id}'";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);
             SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
 
             while(sqlDataReader.Read()) {
-                jogo = new Jogo {
+                Materia = new Materia {
                     Id = (Guid)sqlDataReader["Id"],
                     Nome = (string)sqlDataReader["Nome"],
-                    Produtora = (string)sqlDataReader["Produtora"],
-                    Preco = (double)sqlDataReader["Preco"]
+                    PreRequisitos = (string)sqlDataReader["PreRequisitos"]
                 };
             }
 
             await sqlConnection.CloseAsync();
 
-            return jogo;
+            return Materia;
         }
 
-        public async Task<List<Jogo>> Obter(string nome, string produtora) {
-            var jogos = new List<Jogo>();
+        public async Task<List<Materia>> Obter(string nome) {
+            var Materias = new List<Materia>();
 
-            var comando = $"select * from Jogos where Nome = '{nome}' and Produtora = '{produtora}'";
+            var comando = $"select * from Materias where Nome = '{nome}'";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);
             SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
 
             while(sqlDataReader.Read()) {
-                jogos.Add(new Jogo {
+                Materias.Add(new Materia {
                     Id = (Guid)sqlDataReader["Id"],
                     Nome = (string)sqlDataReader["Nome"],
-                    Produtora = (string)sqlDataReader["Produtora"],
-                    Preco = (double)sqlDataReader["Preco"]
+                    PreRequisitos = (string)sqlDataReader["PreRequisitos"]
                 });
             }
 
             await sqlConnection.CloseAsync();
 
-            return jogos;
+            return Materias;
         }
 
-        public async Task Inserir(Jogo jogo) {
-            var comando = $"insert Jogos (Id, Nome, Produtora, Preco) values ('{jogo.Id}', '{jogo.Nome}', '{jogo.Produtora}', {jogo.Preco.ToString().Replace(",", ".")})";
+        public async Task Inserir(Materia Materia) {
+            var comando = $"insert Materias (Id, Nome, Produtora, Preco) values ('{Materia.Id}', '{Materia.Nome}', '{Materia.PreRequisitos}')";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);
@@ -92,8 +89,8 @@ namespace API_Catalog_training.Repositories {
             await sqlConnection.CloseAsync();
         }
 
-        public async Task Atualizar(Jogo jogo) {
-            var comando = $"update Jogos set Nome = '{jogo.Nome}', Produtora = '{jogo.Produtora}', Preco = {jogo.Preco.ToString().Replace(",", ".")} where Id = '{jogo.Id}'";
+        public async Task Atualizar(Materia Materia) {
+            var comando = $"update Materias set Nome = '{Materia.Nome}', Produtora = '{Materia.PreRequisitos}' where Id = '{Materia.Id}'";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);
@@ -102,7 +99,7 @@ namespace API_Catalog_training.Repositories {
         }
 
         public async Task Remover(Guid id) {
-            var comando = $"delete from Jogos where Id = '{id}'";
+            var comando = $"delete from Materias where Id = '{id}'";
 
             await sqlConnection.OpenAsync();
             SqlCommand sqlCommand = new SqlCommand(comando, sqlConnection);

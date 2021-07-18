@@ -1,4 +1,5 @@
 using API_Catalog_training.Controllers.V1;
+using API_Catalog_training.Controllers.V2;
 using API_Catalog_training.Middleware;
 using API_Catalog_training.Repositories;
 using API_Catalog_training.Services;
@@ -30,8 +31,8 @@ namespace API_Catalog_training {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddScoped<IJogoService, JogoService>();
-            services.AddScoped<IJogoRepository, JogoRepository>();
+            services.AddScoped<IMateriaService, MateriaService>();
+            services.AddScoped<IMateriaRepository, MateriaRepository>();
 
             #region CicloDeVida
 
@@ -56,7 +57,7 @@ namespace API_Catalog_training {
             if(env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExemploApiCatalogoJogos v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExemploApiCatalogoMaterias v1"));
             }
 
             app.UseMiddleware<ExceptionMiddleware>();
